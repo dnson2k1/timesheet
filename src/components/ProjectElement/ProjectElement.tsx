@@ -1,4 +1,5 @@
 import {
+  ChevronDownIcon,
   EyeIcon,
   PencilIcon,
   TrashIcon,
@@ -32,9 +33,10 @@ import { useStyles } from "../ProjectItem/productItemStyles";
 import { IProject } from "~/interfaces/projectTypes";
 import { changeIsEdit } from "~/redux/Project/projectSlice";
 import CreateProject from "../ManageProjects/CreateProject";
-import { getDataEdit } from "~/redux/Project/projectThunk";
+import { getDataEdit, getUserNotPagging } from "~/redux/Project/projectThunk";
 import { getAllTask } from "~/redux/ManageTask/manageTaskThunk";
 import View from "../View/View";
+import { toast } from "react-toastify";
 
 const moment = require("moment"); // require
 
@@ -73,13 +75,19 @@ const ProjectElement = ({ project }: Props) => {
   const handleActive = async () => {
     dispatch(activeProject(project.id));
     await dispatch(getAllProjects(request));
-    dispatch(getQuantityProjects());
+    await dispatch(getQuantityProjects());
+    toast.success("Active Project Successfully", {
+      position: toast.POSITION.BOTTOM_RIGHT,
+    });
     setAnchorEl(null);
   };
   const handleDeActive = async () => {
     dispatch(inActiveProject(project.id));
     await dispatch(getAllProjects(request));
-    dispatch(getQuantityProjects());
+    await dispatch(getQuantityProjects());
+    toast.success("Deactive Project Successfully", {
+      position: toast.POSITION.BOTTOM_RIGHT,
+    });
     setAnchorEl(null);
   };
   const handleDelete = () => {
@@ -87,11 +95,11 @@ const ProjectElement = ({ project }: Props) => {
     dispatch(getQuantityProjects());
     setAnchorEl(null);
   };
-  const handleChangeEdit = () => {
+  const handleChangeEdit = async () => {
     setEdit(true);
     dispatch(changeIsEdit(true));
+    await dispatch(getUserNotPagging());
     dispatch(getDataEdit(project.id));
-    dispatch(getAllTask());
     setAnchorEl(null);
   };
   const handleOpenView = () => {
@@ -144,7 +152,8 @@ const ProjectElement = ({ project }: Props) => {
             aria-expanded={open ? "true" : undefined}
             onClick={handleClick}
           >
-            Actions
+            Actions &nbsp;
+            <ChevronDownIcon width={20} />
           </Button>
           <Menu
             id="basic-menu"

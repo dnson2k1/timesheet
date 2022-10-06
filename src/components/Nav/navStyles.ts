@@ -14,7 +14,8 @@ export const useStyles = makeStyles({
   nav: {
     display: "flex",
     alignItems: "center",
-    background: "rgba(244,67,54,.4)  ",
+    backgroundImage:
+      "url('http://training-timesheet.nccsoft.vn/user-img-background.7f354e93c30f9d51fc3a.jpg')",
     position: "relative",
     height: "100px",
   },

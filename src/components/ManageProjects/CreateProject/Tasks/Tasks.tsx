@@ -12,12 +12,10 @@ import TableHead from "@mui/material/TableHead";
 import Paper from "@mui/material/Paper";
 import { ChevronUpIcon } from "@heroicons/react/24/outline";
 import { useAppDispatch, useAppSelector } from "~/hooks/hooks";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import TaskItemArchive from "./TaskItemArchive";
 import TaskItemDeArchive from "./TaskItemDeArchive";
 
-import { useFormContext } from "react-hook-form";
-import { getAllTask } from "~/redux/ManageTask/manageTaskThunk";
 import {
   changeStatusAllCheck,
   changeStatusAllCheckFalse,
@@ -42,20 +40,6 @@ const Task = () => {
     dispatch(changeStatusAllCheck());
     setIsAllCheck(true);
   };
-  useEffect(() => {
-    dispatch(getAllTask());
-  }, []);
-
-  const methods = useFormContext();
-  useEffect(() => {
-    methods.setValue(
-      "tasks",
-      commonTask.map((item) => ({
-        taskId: item.taskId,
-        billable: item.billable,
-      }))
-    );
-  }, [commonTask, methods]);
 
   return (
     <Box className={classes.task}>

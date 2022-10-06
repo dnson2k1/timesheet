@@ -17,13 +17,12 @@ import { useFormContext } from "react-hook-form";
 
 const Team = () => {
   const classes = useStyles();
-
+  const { commonTask } = useAppSelector((state) => state.projectReducer);
   const {
     listUserProject,
     filters,
     searchValueMember,
     searchValueTeam,
-
     listUserJoinProject,
   } = useAppSelector((state) => state.projectReducer);
 
@@ -64,8 +63,8 @@ const Team = () => {
               .toUpperCase()
               .includes(searchValueTeam.trim().toUpperCase())
         )
-        .filter((user) => {
-          return !activeMember || user.user.type === TEAM_TYPE.Deactive;
+        .filter((item) => {
+          return !activeMember || item.users.type === TEAM_TYPE.Deactive;
         }),
     [searchValueTeam, listUserJoinProject, activeMember]
   );
@@ -74,12 +73,22 @@ const Team = () => {
   useEffect(() => {
     methods.setValue(
       "users",
-      listUserJoinProject.map((user) => ({
-        userId: user.user?.userId,
-        type: user.user?.type,
+      listUserJoinProject.map((item) => ({
+        userId: item.users.userId,
+        type: item.users.type,
       }))
     );
   }, [listUserJoinProject, methods]);
+
+  useEffect(() => {
+    methods.setValue(
+      "tasks",
+      commonTask.map((item) => ({
+        taskId: item.taskId,
+        billable: item.billable,
+      }))
+    );
+  }, [commonTask, methods]);
 
   return (
     <div>
@@ -106,6 +115,7 @@ const Team = () => {
               </Box>
               <Search type="addMember" />
             </Box>
+            {/* {(projectEdit ?searchListUserJoinProject : listUserProjectEdit )} */}
             {!!searchListUserJoinProject.length &&
               searchListUserJoinProject.map((user) => (
                 <Member

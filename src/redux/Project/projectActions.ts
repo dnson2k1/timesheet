@@ -66,12 +66,12 @@ export const projectActions = {
     if (state.listUserJoinProject.length > 0) {
       state.listUserJoinProject.push({
         ...member,
-        user: { userId: member.id, type: member.type },
+        users: { userId: member.id, type: member.type },
       });
     } else {
       state.listUserJoinProject.push({
         ...member,
-        user: { userId: member.id, type: 1 },
+        users: { userId: member.id, type: 1 },
       });
     }
     state.listUserProject = state.listUserProject.filter(

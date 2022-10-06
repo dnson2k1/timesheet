@@ -135,10 +135,12 @@ const schema = yup.object().shape({
 const CreateProject = ({ open, setOpen }: Props) => {
   const [value, setValue] = React.useState(0);
   const { request } = useAppSelector((state) => state.manageProjectReducer);
+
   const dispatch = useAppDispatch();
   const { projectEdit, isEdit } = useAppSelector(
     (state) => state.projectReducer
   );
+
   const methods = useForm<IDataForm>({
     resolver: yupResolver(schema),
     mode: "all",

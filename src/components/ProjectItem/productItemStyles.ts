@@ -1,4 +1,5 @@
 import { makeStyles, Theme } from "@material-ui/core/styles";
+import { findLastIndex } from "lodash";
 
 export const useStyles = makeStyles((theme: Theme) => ({
   productItem: {
@@ -52,6 +53,8 @@ export const useStyles = makeStyles((theme: Theme) => ({
   },
   paperActions: {
     minWidth: "110px !important",
+    display: "flex",
+    alignItems: "center",
   },
   status: {
     position: "absolute",

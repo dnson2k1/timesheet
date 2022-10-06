@@ -1,12 +1,22 @@
 import { Box, Button } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import Filters from "../Filters";
 import { useStyles } from "./manageProjectsStyle";
 import CreateProject from "./CreateProject/CreateProject";
+import { useAppDispatch } from "~/hooks/hooks";
+import { getAllCustomer } from "~/redux/Customer/customerThunk";
+import { getAllTask } from "~/redux/ManageTask/manageTaskThunk";
 
 const ManageProjects = () => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getAllCustomer());
+    dispatch(getAllTask());
+  }, []);
 
   return (
     <>

@@ -22,8 +22,6 @@ const TargetUser = () => {
     (state) => state.projectReducer
   );
 
-  console.log({ targetUser });
-
   return (
     <Box>
       <TableContainer component={Paper}>

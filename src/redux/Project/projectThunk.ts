@@ -28,7 +28,11 @@ export const projectSave = createAsyncThunk(
   "project/save",
   async (data: IDataForm) => {
     try {
-      await axiosInstance.post("/api/services/app/Project/Save", data);
+      const res = await axiosInstance.post(
+        "/api/services/app/Project/Save",
+        data
+      );
+      return res;
     } catch (error) {
       throw new Error(String(error));
     }
@@ -59,7 +63,7 @@ export const extraReducersProject = (
       state.loading = true;
     })
     .addCase(getUserNotPagging.rejected, (state, action) => {
-      state.error = action.error as string;
+      state.error = action.error.message as string;
       state.loading = false;
     })
     .addCase(getUserNotPagging.fulfilled, (state, action) => {
@@ -79,7 +83,7 @@ export const extraReducersProject = (
     });
   builder
     .addCase(getAllTask.rejected, (state, action) => {
-      state.error = action.error as string;
+      state.error = action.error.message as string;
       state.loading = false;
     })
     .addCase(getAllTask.fulfilled, (state, action) => {
@@ -116,7 +120,7 @@ export const extraReducersProject = (
       state.loading = true;
     })
     .addCase(projectSave.rejected, (state, action) => {
-      toast.error(action.error.message);
+      toast.error(action.error.message as string);
       state.loading = false;
     });
   builder
@@ -136,13 +140,14 @@ export const extraReducersProject = (
       const usersId = state.projectEdit.users.map((item) => item.userId);
 
       //assign data to team
-      state.listUserProject.forEach((user) => {
-        if (usersId.includes(user.id)) {
+
+      state.listUserProject.forEach((item) => {
+        if (usersId.includes(item.id)) {
           state.listUserJoinProject.push({
-            ...user,
-            user: {
-              userId: user.user?.userId,
-              type: state.projectEdit.users[usersId.indexOf(user.id)].type,
+            ...item,
+            users: {
+              userId: item.id,
+              type: state.projectEdit.users[usersId.indexOf(item.id)].type,
             },
           });
         }
@@ -173,7 +178,6 @@ export const extraReducersProject = (
       state.targetUser = state.targetUser.filter(
         (user) => !targetProjectId.includes(user.userId)
       );
-
       state.loading = false;
     });
 };

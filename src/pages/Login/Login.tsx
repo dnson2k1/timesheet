@@ -41,6 +41,7 @@ const Login = () => {
     );
     if (data.username !== "admin" || data.password !== "123qwe") {
       toast.error("Incorrect username or password");
+
       return;
     }
   };

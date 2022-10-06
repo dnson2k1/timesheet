@@ -16,9 +16,7 @@ import { useStyles } from "./projectsStyle";
 
 const Projects = () => {
   const classes = useStyles();
-  const { projectList, request, loading } = useAppSelector(
-    (state) => state.manageProjectReducer
-  );
+  const { request } = useAppSelector((state) => state.manageProjectReducer);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -34,6 +32,10 @@ const Projects = () => {
 
   const dispatch = useAppDispatch();
   useEffect(() => {
+    dispatch(getAllProjects(request));
+  }, [dispatch, request]);
+
+  useEffect(() => {
     const getAPI = async () => {
       await dispatch(getAllProjects(request));
       await dispatch(getQuantityProjects());
@@ -41,10 +43,6 @@ const Projects = () => {
     };
     getAPI();
   }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(getAllProjects(request));
-  }, [dispatch, request]);
 
   return (
     <Box>

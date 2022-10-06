@@ -103,7 +103,7 @@ export const extraReducersActionsManagerProject = (
       state.loading = false;
     })
     .addCase(getAllProjects.rejected, (state, action) => {
-      state.error = action.error as string;
+      state.error = action.error.message as string;
     });
   builder
 
@@ -123,7 +123,7 @@ export const extraReducersActionsManagerProject = (
       state.loading = true;
     })
     .addCase(inActiveProject.rejected, (state, action) => {
-      state.error = action.error as string;
+      state.error = action.error.message as string;
       state.loading = false;
     })
     .addCase(inActiveProject.fulfilled, (state, action) => {
@@ -133,9 +133,6 @@ export const extraReducersActionsManagerProject = (
 
       if (findProject) {
         findProject.status = PROJECT_STATUS.ACTIVE;
-        toast.success("Deactive Project Successfully", {
-          position: toast.POSITION.BOTTOM_RIGHT,
-        });
       }
     });
   builder
@@ -152,9 +149,6 @@ export const extraReducersActionsManagerProject = (
       );
       if (findProject) {
         findProject.status = PROJECT_STATUS.INACTIVE;
-        toast.success("Active Project Successfully", {
-          position: toast.POSITION.BOTTOM_RIGHT,
-        });
       }
     });
   builder
@@ -165,8 +159,8 @@ export const extraReducersActionsManagerProject = (
       state.projectQuantities = action.payload;
       state.loading = false;
     })
-    .addCase(getQuantityProjects.rejected, (state) => {
+    .addCase(getQuantityProjects.rejected, (state, action) => {
       state.projectQuantities = [];
-      state.loading = false;
+      state.error = action.error.message as string;
     });
 };

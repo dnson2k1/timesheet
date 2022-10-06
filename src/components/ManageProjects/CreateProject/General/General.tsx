@@ -16,16 +16,16 @@ import classNames from "classnames";
 
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { Controller } from "react-hook-form";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import NewClient from "./NewClient/NewClient";
 
 import { useFormContext } from "react-hook-form";
-import { useAppDispatch, useAppSelector } from "~/hooks/hooks";
-import { getAllCustomer } from "~/redux/Customer/customerThunk";
+import { useAppSelector } from "~/hooks/hooks";
+
 import { IDataForm } from "~/interfaces/projectTypes";
+import DatePicker from "~/components/DatePicker";
 
 type Props = {
   project?: IDataForm;
@@ -33,17 +33,12 @@ type Props = {
 
 const General = ({ project }: Props) => {
   const classes = useStyles();
-  const dispatch = useAppDispatch();
 
   const { listCustomer } = useAppSelector((state) => state.customerReducer);
   const [open, setOpen] = useState(false);
   const { register } = useFormContext();
 
   const methods = useFormContext<IDataForm>();
-
-  useEffect(() => {
-    dispatch(getAllCustomer());
-  }, []);
 
   return (
     <>
@@ -101,7 +96,7 @@ const General = ({ project }: Props) => {
                   {...register("name")}
                 />
                 {!!methods.formState.errors.name && (
-                  <Typography className={classes.error}>
+                  <Typography color="error">
                     {methods.formState.errors.name.message}
                   </Typography>
                 )}
@@ -120,7 +115,7 @@ const General = ({ project }: Props) => {
                   {...register("code")}
                 />
                 {!!methods.formState.errors.code && (
-                  <Typography className={classes.error}>
+                  <Typography color="error">
                     {methods.formState.errors.code.message}
                   </Typography>
                 )}
@@ -134,55 +129,25 @@ const General = ({ project }: Props) => {
               <Box className={classes.date}>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <Box>
-                    <Controller
-                      name="timeStart"
-                      control={methods.control}
-                      defaultValue={new Date("")}
-                      render={({ field }) => (
-                        <DesktopDatePicker
-                          inputFormat="dd/MM/yyyy"
-                          label="Start at"
-                          {...field}
-                          renderInput={(params) => (
-                            <TextField
-                              id="timeStart"
-                              variant="outlined"
-                              color="primary"
-                              error={false}
-                              {...params}
-                            />
-                          )}
-                        />
+                    <DatePicker name="timeStart" label="Start at" />
+                    <Box>
+                      {!!methods.formState.errors.timeStart && (
+                        <Typography color="error">
+                          {methods.formState.errors.timeStart.message}
+                        </Typography>
                       )}
-                    />
+                    </Box>
                   </Box>
                   <Typography>to</Typography>
                   <Box>
-                    <Controller
-                      name="timeEnd"
-                      control={methods.control}
-                      defaultValue={new Date("")}
-                      render={({ field }) => (
-                        <DesktopDatePicker
-                          inputFormat="dd/MM/yyyy"
-                          label="From Date"
-                          {...field}
-                          renderInput={(params) => (
-                            <TextField
-                              id="timeEnd"
-                              variant="outlined"
-                              error={false}
-                              {...params}
-                            />
-                          )}
-                        />
+                    <DatePicker name="timeEnd" label="From Date" />
+                    <Box className={classes.log_error}>
+                      {!!methods.formState.errors.timeEnd && (
+                        <Typography color="error">
+                          {methods.formState.errors.timeEnd.message}
+                        </Typography>
                       )}
-                    />
-                    {!!methods.formState.errors.timeEnd && (
-                      <Typography color="error">
-                        {methods.formState.errors.timeEnd.message}
-                      </Typography>
-                    )}
+                    </Box>
                   </Box>
                 </LocalizationProvider>
               </Box>

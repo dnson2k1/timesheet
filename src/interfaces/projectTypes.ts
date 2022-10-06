@@ -94,7 +94,7 @@ export type IProjectUser = {
   branchDisplayName: string | null;
   branchColor: string | null;
   branchId: number | null;
-  user: IUserMemberType; // users
+  users: IUserMemberType; // users
 };
 
 export interface ITargetUser {

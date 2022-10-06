@@ -40,6 +40,10 @@ export const useStyles = makeStyles((theme: Theme) => ({
     display: "flex",
     alignItems: "center",
     gap: "0 20px",
+    position: "relative",
+  },
+  log_error: {
+    position: "absolute",
   },
   button: {
     height: "30px",
