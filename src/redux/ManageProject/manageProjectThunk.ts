@@ -8,29 +8,19 @@ import { IRequest, IStateManageProject } from "~/interfaces/manageProjectType";
 export const getAllProjects = createAsyncThunk(
   "manageProject/getAll",
   async (req: IRequest) => {
-    try {
-      if (req.status !== FILTER_SELECTED.ALL_PROJECT) {
-        const res = await axiosInstance.get(
-          "/api/services/app/Project/GetAll",
-          {
-            params: req,
-          }
-        );
-        return res.data.result;
-      } else {
-        const res = await axiosInstance.get(
-          `/api/services/app/Project/GetAll`,
-          {
-            params: {
-              status: undefined,
-              search: req.search || undefined,
-            },
-          }
-        );
-        return res.data.result;
-      }
-    } catch (error) {
-      throw new Error(String(error));
+    if (req.status !== FILTER_SELECTED.ALL_PROJECT) {
+      const res = await axiosInstance.get("/api/services/app/Project/GetAll", {
+        params: req,
+      });
+      return res.data.result;
+    } else {
+      const res = await axiosInstance.get(`/api/services/app/Project/GetAll`, {
+        params: {
+          status: undefined,
+          search: req.search || undefined,
+        },
+      });
+      return res.data.result;
     }
   }
 );
@@ -38,56 +28,40 @@ export const getAllProjects = createAsyncThunk(
 export const getQuantityProjects = createAsyncThunk(
   "projects/getquantity",
   async () => {
-    try {
-      const response = await axiosInstance.get(
-        `/api/services/app/Project/GetQuantityProject`
-      );
-      return response.data.result;
-    } catch (error) {
-      throw new Error(String(error)); //Chuyen qua Json, roi lay loi
-    }
+    const response = await axiosInstance.get(
+      `/api/services/app/Project/GetQuantityProject`
+    );
+    return response.data.result;
   }
 );
 
 export const deleteProject = createAsyncThunk(
   "manageProject/deleteProject",
   async (projectId: number) => {
-    try {
-      await axiosInstance.delete("/api/services/app/Project/Delete", {
-        params: {
-          Id: projectId,
-        },
-      });
-      return projectId;
-    } catch (error) {
-      throw new Error(String(error));
-    }
+    await axiosInstance.delete("/api/services/app/Project/Delete", {
+      params: {
+        Id: projectId,
+      },
+    });
+    return projectId;
   }
 );
 
 export const inActiveProject = createAsyncThunk(
   "manageProject/inActiveProject",
   async (id: number) => {
-    try {
-      await axiosInstance.post("/api/services/app/Project/Inactive", { id });
+    await axiosInstance.post("/api/services/app/Project/Inactive", { id });
 
-      return id;
-    } catch (error) {
-      throw new Error(String(error));
-    }
+    return id;
   }
 );
 export const activeProject = createAsyncThunk(
   "manageProject/activeProject",
   async (id: number) => {
-    try {
-      await axiosInstance.post("/api/services/app/Project/Active", {
-        id,
-      });
-      return { id };
-    } catch (error) {
-      throw new Error(String(error));
-    }
+    await axiosInstance.post("/api/services/app/Project/Active", {
+      id,
+    });
+    return { id };
   }
 );
 
@@ -104,6 +78,7 @@ export const extraReducersActionsManagerProject = (
     })
     .addCase(getAllProjects.rejected, (state, action) => {
       state.error = action.error.message as string;
+      toast.error(action.error.message);
     });
   builder
 
@@ -125,6 +100,7 @@ export const extraReducersActionsManagerProject = (
     .addCase(inActiveProject.rejected, (state, action) => {
       state.error = action.error.message as string;
       state.loading = false;
+      toast.error(action.error.message);
     })
     .addCase(inActiveProject.fulfilled, (state, action) => {
       const findProject = state.projectList.find(
@@ -142,6 +118,7 @@ export const extraReducersActionsManagerProject = (
     .addCase(activeProject.rejected, (state, action) => {
       state.error = action.error as string;
       state.loading = false;
+      toast.error(action.error.message);
     })
     .addCase(activeProject.fulfilled, (state, action) => {
       const findProject = state.projectList.find(
@@ -162,5 +139,6 @@ export const extraReducersActionsManagerProject = (
     .addCase(getQuantityProjects.rejected, (state, action) => {
       state.projectQuantities = [];
       state.error = action.error.message as string;
+      toast.error(action.error.message);
     });
 };

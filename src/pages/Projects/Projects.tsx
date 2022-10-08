@@ -7,11 +7,7 @@ import React, { useEffect } from "react";
 import ManageProjects from "~/components/ManageProjects";
 import ProjectList from "~/components/ProjectList";
 import { useAppDispatch, useAppSelector } from "~/hooks/hooks";
-import {
-  getAllProjects,
-  getQuantityProjects,
-} from "~/redux/ManageProject/manageProjectThunk";
-import { getUserNotPagging } from "~/redux/Project/projectThunk";
+import { getAllProjects } from "~/redux/ManageProject/manageProjectThunk";
 import { useStyles } from "./projectsStyle";
 
 const Projects = () => {
@@ -34,15 +30,6 @@ const Projects = () => {
   useEffect(() => {
     dispatch(getAllProjects(request));
   }, [dispatch, request]);
-
-  useEffect(() => {
-    const getAPI = async () => {
-      await dispatch(getAllProjects(request));
-      await dispatch(getQuantityProjects());
-      await dispatch(getUserNotPagging());
-    };
-    getAPI();
-  }, [dispatch]);
 
   return (
     <Box>

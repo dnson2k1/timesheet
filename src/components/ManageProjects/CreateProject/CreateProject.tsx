@@ -23,11 +23,16 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "~/hooks/hooks";
-import { projectSave } from "~/redux/Project/projectThunk";
+import {
+  getDataEdit,
+  getUserNotPagging,
+  projectSave,
+} from "~/redux/Project/projectThunk";
 import { formatDate } from "~/utils/convertDay";
 import { changeIsEdit, resetProjectForm } from "~/redux/Project/projectSlice";
 import TargerUser from "./TargerUser";
 import { getAllProjects } from "~/redux/ManageProject/manageProjectThunk";
+import Loading from "~/components/Loading/Loading";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -116,7 +121,11 @@ const schema = yup.object().shape({
   customerId: yup.number().required("Project customer is required!"),
   name: yup.string().required("Project name is required!"),
   code: yup.string().required("Project code is required!"),
-  timeStart: yup.date().required("Project time start is required!"),
+  timeStart: yup
+    .date()
+    .required("Project time start is required!")
+    .nullable()
+    .max(yup.ref("timeEnd"), "Time start must be before Time end"),
   timeEnd: yup
     .date()
     .nullable()
@@ -137,7 +146,7 @@ const CreateProject = ({ open, setOpen }: Props) => {
   const { request } = useAppSelector((state) => state.manageProjectReducer);
 
   const dispatch = useAppDispatch();
-  const { projectEdit, isEdit } = useAppSelector(
+  const { projectEdit, isEdit, loading } = useAppSelector(
     (state) => state.projectReducer
   );
 
@@ -154,9 +163,13 @@ const CreateProject = ({ open, setOpen }: Props) => {
     setOpen(false);
     dispatch(changeIsEdit(false));
     dispatch(resetProjectForm());
+    setValue(0);
   };
+
   const onSubmitForm = async (data: IDataForm) => {
-    if (!methods.getValues("users")?.length) {
+    const listUsers = methods.getValues("users");
+    const isUserType = listUsers?.map((item) => item.type);
+    if (!methods.getValues("users").length) {
       toast.error(
         "Need at least one member in project (add member in tab team)",
         {
@@ -166,6 +179,16 @@ const CreateProject = ({ open, setOpen }: Props) => {
       );
       return;
     }
+    if (!isUserType.includes(1)) {
+      toast.error("Need at least one member is project manager", {
+        position: "top-center",
+        autoClose: 4000,
+      });
+      return;
+    }
+    setOpen(false);
+    dispatch(resetProjectForm());
+    dispatch(changeIsEdit(false));
     await dispatch(
       projectSave({
         ...data,
@@ -173,10 +196,10 @@ const CreateProject = ({ open, setOpen }: Props) => {
         timeEnd: formatDate(data.timeEnd),
       })
     );
-    setOpen(false);
+
     await dispatch(getAllProjects(request));
-    dispatch(resetProjectForm());
-    dispatch(changeIsEdit(false));
+
+    setValue(0);
   };
 
   useEffect(() => {
@@ -184,63 +207,73 @@ const CreateProject = ({ open, setOpen }: Props) => {
   }, [projectEdit, methods]);
 
   return (
-    <Box>
-      <BootstrapDialog open={open} onClose={handleClose}>
-        <BootstrapDialogTitle
-          id="customized-dialog-title"
-          onClose={handleClose}
-        >
-          {!projectEdit.id
-            ? "New Project"
-            : `Edit Project - ${projectEdit.name}`}
-        </BootstrapDialogTitle>
-        <DialogContent>
-          <FormProvider {...methods}>
-            <form>
-              <Box sx={{ width: "100%" }}>
-                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                  <Tabs
-                    value={value}
-                    onChange={handleChange}
-                    aria-label="basic tabs example"
-                  >
-                    <Tab label="General" {...a11yProps(0)} />
-                    <Tab label="Team" {...a11yProps(1)} />
-                    <Tab label="Task" {...a11yProps(2)} />
+    <>
+      <Box>
+        <BootstrapDialog open={open} onClose={handleClose}>
+          <BootstrapDialogTitle
+            id="customized-dialog-title"
+            onClose={handleClose}
+          >
+            {!projectEdit.id
+              ? "New Project"
+              : `Edit Project - ${projectEdit.name}`}
+          </BootstrapDialogTitle>
 
-                    <Tab label="Notification" {...a11yProps(3)} />
-                    {isEdit && <Tab label="Target Users" {...a11yProps(4)} />}
-                  </Tabs>
-                </Box>
-                <TabPanel value={value} index={0}>
-                  <General />
-                </TabPanel>
-                <TabPanel value={value} index={1}>
-                  <Team />
-                </TabPanel>
-                <TabPanel value={value} index={2}>
-                  <Tasks />
-                </TabPanel>
-                <TabPanel value={value} index={3}>
-                  <Notification />
-                </TabPanel>
-                {isEdit && projectEdit.id && (
-                  <TabPanel value={value} index={4}>
-                    <TargerUser />
-                  </TabPanel>
-                )}
-              </Box>
-            </form>
-          </FormProvider>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit" onClick={methods.handleSubmit(onSubmitForm)}>
-            Submit
-          </Button>
-        </DialogActions>
-      </BootstrapDialog>
-    </Box>
+          <DialogContent>
+            <FormProvider {...methods}>
+              {loading ? (
+                <Loading />
+              ) : (
+                <form>
+                  <Box sx={{ width: "100%" }}>
+                    <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                      <Tabs
+                        value={value}
+                        onChange={handleChange}
+                        aria-label="basic tabs example"
+                      >
+                        <Tab label="General" {...a11yProps(0)} />
+                        <Tab label="Team" {...a11yProps(1)} />
+                        <Tab label="Task" {...a11yProps(2)} />
+
+                        <Tab label="Notification" {...a11yProps(3)} />
+                        {isEdit && (
+                          <Tab label="Target Users" {...a11yProps(4)} />
+                        )}
+                      </Tabs>
+                    </Box>
+                    <TabPanel value={value} index={0}>
+                      <General />
+                    </TabPanel>
+                    <TabPanel value={value} index={1}>
+                      <Team />
+                    </TabPanel>
+                    <TabPanel value={value} index={2}>
+                      <Tasks />
+                    </TabPanel>
+                    <TabPanel value={value} index={3}>
+                      <Notification />
+                    </TabPanel>
+                    {isEdit && projectEdit.id && (
+                      <TabPanel value={value} index={4}>
+                        <TargerUser />
+                      </TabPanel>
+                    )}
+                  </Box>
+                </form>
+              )}
+            </FormProvider>
+          </DialogContent>
+
+          <DialogActions>
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button type="submit" onClick={methods.handleSubmit(onSubmitForm)}>
+              Submit
+            </Button>
+          </DialogActions>
+        </BootstrapDialog>
+      </Box>
+    </>
   );
 };
 

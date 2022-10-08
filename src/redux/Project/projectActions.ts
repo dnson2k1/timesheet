@@ -6,6 +6,7 @@ import {
   IProjectUser,
   IStateProject,
   ITargetUser,
+  ProjectTargetUser,
 } from "~/interfaces/projectTypes";
 import { ITaskItem } from "~/interfaces/taskTypes";
 
@@ -49,7 +50,7 @@ export const projectActions = {
       if (user.id === action.payload.id) {
         return {
           ...user,
-          user: { userId: action.payload.id, type: action.payload.type },
+          users: { userId: action.payload.id, type: action.payload.type },
         };
       }
       return user;
@@ -66,7 +67,7 @@ export const projectActions = {
     if (state.listUserJoinProject.length > 0) {
       state.listUserJoinProject.push({
         ...member,
-        users: { userId: member.id, type: member.type },
+        users: { userId: member.id, type: 0 },
       });
     } else {
       state.listUserJoinProject.push({
@@ -96,7 +97,10 @@ export const projectActions = {
     const User = state.targetUser.find(
       (user) => user.userId === action.payload
     ) as ITargetUser;
-    state.targetUserJoin.push(User);
+    state.targetUserJoin.push({
+      ...User,
+    });
+
     state.targetUser = state.targetUser.filter(
       (user) => user.userId !== action.payload
     );

@@ -115,7 +115,6 @@ const Team = () => {
               </Box>
               <Search type="addMember" />
             </Box>
-            {/* {(projectEdit ?searchListUserJoinProject : listUserProjectEdit )} */}
             {!!searchListUserJoinProject.length &&
               searchListUserJoinProject.map((user) => (
                 <Member

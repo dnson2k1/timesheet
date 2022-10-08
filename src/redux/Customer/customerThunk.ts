@@ -4,28 +4,20 @@ import axiosInstance from "~/configs/axios";
 import { ICustomer, IStateCustomer } from "~/interfaces/customerType";
 
 export const getAllCustomer = createAsyncThunk("customer/getAll", async () => {
-  try {
-    const res = await axiosInstance.get("/api/services/app/Customer/GetAll");
-    return res.data;
-  } catch (error) {
-    throw new Error(String(error));
-  }
+  const res = await axiosInstance.get("/api/services/app/Customer/GetAll");
+  return res.data;
 });
 
 export const createCustomer = createAsyncThunk(
   "customer/create",
   async ({ code, name, address }: ICustomer) => {
-    try {
-      const res = await axiosInstance.post("/api/services/app/Customer/Save", {
-        code,
-        name,
-        address,
-      });
+    const res = await axiosInstance.post("/api/services/app/Customer/Save", {
+      code,
+      name,
+      address,
+    });
 
-      return res.data;
-    } catch (error) {
-      throw new Error(String(error));
-    }
+    return res.data;
   }
 );
 
@@ -36,6 +28,7 @@ export const extraReducersCustomer = (
     .addCase(getAllCustomer.rejected, (state, action) => {
       state.error = action.error as string;
       state.loading = false;
+      toast.error(action.error.message);
     })
     .addCase(getAllCustomer.fulfilled, (state, action) => {
       state.listCustomer = action.payload.result;
@@ -44,9 +37,7 @@ export const extraReducersCustomer = (
     .addCase(createCustomer.rejected, (state, action) => {
       state.error = action.error as string;
       state.loading = false;
-      toast.error("Name or Code duplicated", {
-        position: toast.POSITION.BOTTOM_RIGHT,
-      });
+      toast.error(action.error.message);
     })
     .addCase(createCustomer.fulfilled, (state, action) => {
       state.listCustomer.push(action.payload.result);

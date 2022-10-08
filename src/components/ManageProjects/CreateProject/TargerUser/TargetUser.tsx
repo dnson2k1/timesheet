@@ -10,6 +10,8 @@ import {
   TableContainer,
   TableHead,
 } from "@mui/material";
+import { useEffect } from "react";
+import { useFormContext } from "react-hook-form";
 import { useAppSelector } from "~/hooks/hooks";
 import { useStyles } from "./targetuserStyles";
 import User from "./User";
@@ -22,6 +24,16 @@ const TargetUser = () => {
     (state) => state.projectReducer
   );
 
+  const methods = useFormContext();
+  useEffect(() => {
+    methods.setValue(
+      "projectTargetUsers",
+      targetUserJoin.map((item) => ({
+        userId: item.userId,
+        roleName: item.roleName,
+      }))
+    );
+  }, [targetUserJoin, methods]);
   return (
     <Box>
       <TableContainer component={Paper}>

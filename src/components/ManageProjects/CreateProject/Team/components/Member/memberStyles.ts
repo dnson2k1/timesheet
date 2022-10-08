@@ -46,4 +46,7 @@ export const useStyles = makeStyles({
       right: "20px",
     },
   },
+  typeNull: {
+    backgroundColor: "transparent",
+  },
 });

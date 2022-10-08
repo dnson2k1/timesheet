@@ -13,45 +13,33 @@ import { toast } from "react-toastify";
 export const getUserNotPagging = createAsyncThunk(
   "users/getUserNotPagging",
   async () => {
-    try {
-      const res = await axiosInstance.get(
-        "/api/services/app/User/GetUserNotPagging"
-      );
-      return res.data;
-    } catch (error) {
-      throw new Error(String(error));
-    }
+    const res = await axiosInstance.get(
+      "/api/services/app/User/GetUserNotPagging"
+    );
+    return res.data;
   }
 );
 
 export const projectSave = createAsyncThunk(
   "project/save",
   async (data: IDataForm) => {
-    try {
-      const res = await axiosInstance.post(
-        "/api/services/app/Project/Save",
-        data
-      );
-      return res;
-    } catch (error) {
-      throw new Error(String(error));
-    }
+    const res = await axiosInstance.post(
+      "/api/services/app/Project/Save",
+      data
+    );
+    return res;
   }
 );
 
 export const getDataEdit = createAsyncThunk(
   "projectEdit/getData",
-  async (id: number) => {
-    try {
-      const res = await axiosInstance.get("/api/services/app/Project/Get", {
-        params: {
-          input: id,
-        },
-      });
-      return res.data;
-    } catch (error) {
-      throw new Error(String(error));
-    }
+  async (id: number | undefined) => {
+    const res = await axiosInstance.get("/api/services/app/Project/Get", {
+      params: {
+        input: id,
+      },
+    });
+    return res.data;
   }
 );
 
@@ -65,6 +53,7 @@ export const extraReducersProject = (
     .addCase(getUserNotPagging.rejected, (state, action) => {
       state.error = action.error.message as string;
       state.loading = false;
+      toast.error(action.error.message);
     })
     .addCase(getUserNotPagging.fulfilled, (state, action) => {
       state.listUserProject = action.payload.result.filter(
@@ -85,6 +74,7 @@ export const extraReducersProject = (
     .addCase(getAllTask.rejected, (state, action) => {
       state.error = action.error.message as string;
       state.loading = false;
+      toast.error(action.error.message);
     })
     .addCase(getAllTask.fulfilled, (state, action) => {
       state.commonTask = [];
@@ -120,13 +110,14 @@ export const extraReducersProject = (
       state.loading = true;
     })
     .addCase(projectSave.rejected, (state, action) => {
-      toast.error(action.error.message as string);
       state.loading = false;
+      toast.error(action.error.message);
     });
   builder
     .addCase(getDataEdit.rejected, (state, action) => {
       toast.error(action.error.message);
       state.loading = false;
+      toast.error(action.error.message);
     })
     .addCase(getDataEdit.fulfilled, (state, action) => {
       state.projectEdit = action.payload.result;
@@ -167,6 +158,14 @@ export const extraReducersProject = (
       state.targetUser.forEach((user: ITargetUser) => {
         if (targetProjectId.includes(user.userId)) {
           state.targetUserJoin.push({
+            ...user,
+            roleName:
+              state.projectEdit.projectTargetUsers[
+                targetProjectId.indexOf(user.userId)
+              ].roleName,
+          });
+
+          state.projectEdit.projectTargetUsers.push({
             ...user,
             roleName:
               state.projectEdit.projectTargetUsers[

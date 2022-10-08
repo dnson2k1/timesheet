@@ -18,6 +18,7 @@ import {
   changeMemberType,
   removeJoinProject,
 } from "~/redux/Project/projectSlice";
+
 import { useStyles } from "./memberStyles";
 
 type Props = {
@@ -70,7 +71,9 @@ const Member = ({ user, iconLeft, iconRight, isSelect }: Props) => {
                   : user.type === TYPE_USER.InternShip
                   ? classes.internship
                   : ""
-              }`
+              }
+              ${TYPES[user.type] === undefined ? classes.typeNull : ""}
+              `
             )}
             component="span"
           >
@@ -78,7 +81,9 @@ const Member = ({ user, iconLeft, iconRight, isSelect }: Props) => {
           </Box>
           <Box
             component="span"
-            className={`${classes.span} ${classes.bgLevel}`}
+            className={`${classes.span} ${classes.bgLevel}  ${
+              LEVELUSER[user.level] === undefined ? classes.typeNull : ""
+            }`}
           >
             {LEVELUSER[user.level]}
           </Box>
@@ -91,17 +96,17 @@ const Member = ({ user, iconLeft, iconRight, isSelect }: Props) => {
             <Select
               labelId="team-type-select"
               id="team-type"
-              defaultValue={user.type}
+              defaultValue={user.users.type}
             >
-              {teamType.map((item: ITeamType, index: number) => (
+              {teamType.map((item: ITeamType) => (
                 <MenuItem
                   key={item.id}
                   value={item.value}
-                  onClick={() =>
+                  onClick={() => {
                     dispatch(
                       changeMemberType({ id: user.id, type: item.value })
-                    )
-                  }
+                    );
+                  }}
                 >
                   {item.type}
                 </MenuItem>

@@ -18,7 +18,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { Controller } from "react-hook-form";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import NewClient from "./NewClient/NewClient";
 
 import { useFormContext } from "react-hook-form";
@@ -37,7 +37,6 @@ const General = ({ project }: Props) => {
   const { listCustomer } = useAppSelector((state) => state.customerReducer);
   const [open, setOpen] = useState(false);
   const { register } = useFormContext();
-
   const methods = useFormContext<IDataForm>();
 
   return (
@@ -60,7 +59,7 @@ const General = ({ project }: Props) => {
                       value={field.value || 0}
                       renderValue={(value) =>
                         !!value ? (
-                          `client ${value}`
+                          `Client ${value}`
                         ) : (
                           <option>Choose a client...</option>
                         )
@@ -130,7 +129,7 @@ const General = ({ project }: Props) => {
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <Box>
                     <DatePicker name="timeStart" label="Start at" />
-                    <Box>
+                    <Box className={classes.log_error}>
                       {!!methods.formState.errors.timeStart && (
                         <Typography color="error">
                           {methods.formState.errors.timeStart.message}
@@ -140,7 +139,7 @@ const General = ({ project }: Props) => {
                   </Box>
                   <Typography>to</Typography>
                   <Box>
-                    <DatePicker name="timeEnd" label="From Date" />
+                    <DatePicker name="timeEnd" label="Start end" />
                     <Box className={classes.log_error}>
                       {!!methods.formState.errors.timeEnd && (
                         <Typography color="error">
