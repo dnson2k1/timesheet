@@ -61,6 +61,7 @@ export type IStateProject = {
   loading: boolean;
   searchValueMember: string;
   searchValueTeam: string;
+  activeMember: boolean;
   error: string;
   filters: IFiltersMember;
   isEdit: boolean;

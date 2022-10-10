@@ -24,6 +24,8 @@ export const useStyles = makeStyles((theme: Theme) => ({
   },
   textArea: {
     padding: "10px",
+    fontSize: "16px",
+    fontFamily: "Roboto",
   },
   flex: {
     display: "flex",

@@ -25,12 +25,7 @@ const DatePicker = ({ name, label }: Props) => {
               label={label}
               {...field}
               renderInput={(params) => (
-                <TextField
-                  id="timeStart"
-                  variant="outlined"
-                  color="primary"
-                  {...params}
-                />
+                <TextField variant="outlined" color="primary" {...params} />
               )}
             />
           );

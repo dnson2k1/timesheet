@@ -74,11 +74,8 @@ export const extraReducerManageTask = (
 ) => {
   builder
     .addCase(getAllTask.fulfilled, (state, action) => {
-      return {
-        ...state,
-        isLoading: false,
-        listTask: action.payload,
-      };
+      state.listTask = action.payload;
+      state.loading = false;
     })
     .addCase(getAllTask.pending, (state, action) => {
       return {

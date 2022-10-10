@@ -6,5 +6,6 @@ export const useStyles = makeStyles({
     alignItems: "center",
     gridTemplateColumns: "1fr 1fr 1fr",
     marginBottom: 20,
+    gap: "0 20px",
   },
 });

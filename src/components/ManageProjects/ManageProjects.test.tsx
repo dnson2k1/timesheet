@@ -38,6 +38,7 @@ const IProject: IStateProject = {
   loading: false,
   searchValueMember: "",
   searchValueTeam: "",
+  activeMember: false,
   error: "",
   filters: { branch: 0, type: 0 },
   isEdit: false,

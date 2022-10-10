@@ -23,15 +23,14 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "~/hooks/hooks";
-import {
-  getDataEdit,
-  getUserNotPagging,
-  projectSave,
-} from "~/redux/Project/projectThunk";
+import { projectSave } from "~/redux/Project/projectThunk";
 import { formatDate } from "~/utils/convertDay";
 import { changeIsEdit, resetProjectForm } from "~/redux/Project/projectSlice";
 import TargerUser from "./TargerUser";
-import { getAllProjects } from "~/redux/ManageProject/manageProjectThunk";
+import {
+  getAllProjects,
+  getQuantityProjects,
+} from "~/redux/ManageProject/manageProjectThunk";
 import Loading from "~/components/Loading/Loading";
 
 interface TabPanelProps {
@@ -125,11 +124,14 @@ const schema = yup.object().shape({
     .date()
     .required("Project time start is required!")
     .nullable()
-    .max(yup.ref("timeEnd"), "Time start must be before Time end"),
+    .max(yup.ref("timeEnd"), "Time start must be after Time start"),
+
   timeEnd: yup
     .date()
+    .required("Project time end is required!")
     .nullable()
     .min(yup.ref("timeStart"), "Time end must be after Time start"),
+
   note: yup.string(),
   projectType: yup.number().required(),
   users: yup.array().of(
@@ -186,6 +188,7 @@ const CreateProject = ({ open, setOpen }: Props) => {
       });
       return;
     }
+
     setOpen(false);
     dispatch(resetProjectForm());
     dispatch(changeIsEdit(false));
@@ -196,12 +199,13 @@ const CreateProject = ({ open, setOpen }: Props) => {
         timeEnd: formatDate(data.timeEnd),
       })
     );
-
     await dispatch(getAllProjects(request));
+    await dispatch(getQuantityProjects());
 
     setValue(0);
   };
 
+  const isTargetUser = projectEdit.users?.map((item) => item.type);
   useEffect(() => {
     projectEdit && methods.reset(projectEdit);
   }, [projectEdit, methods]);
@@ -237,9 +241,11 @@ const CreateProject = ({ open, setOpen }: Props) => {
                         <Tab label="Task" {...a11yProps(2)} />
 
                         <Tab label="Notification" {...a11yProps(3)} />
-                        {isEdit && (
-                          <Tab label="Target Users" {...a11yProps(4)} />
-                        )}
+                        {isEdit &&
+                          projectEdit.id &&
+                          isTargetUser.includes(2) && (
+                            <Tab label="Target Users" {...a11yProps(4)} />
+                          )}
                       </Tabs>
                     </Box>
                     <TabPanel value={value} index={0}>
@@ -254,7 +260,7 @@ const CreateProject = ({ open, setOpen }: Props) => {
                     <TabPanel value={value} index={3}>
                       <Notification />
                     </TabPanel>
-                    {isEdit && projectEdit.id && (
+                    {isEdit && projectEdit.id && isTargetUser.includes(2) && (
                       <TabPanel value={value} index={4}>
                         <TargerUser />
                       </TabPanel>

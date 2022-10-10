@@ -100,6 +100,7 @@ export const extraReducersProject = (
           state.ortherTask.push(tempTask);
         }
       });
+      state.loading = false;
     });
   builder
     .addCase(projectSave.fulfilled, (state, action) => {
@@ -158,14 +159,6 @@ export const extraReducersProject = (
       state.targetUser.forEach((user: ITargetUser) => {
         if (targetProjectId.includes(user.userId)) {
           state.targetUserJoin.push({
-            ...user,
-            roleName:
-              state.projectEdit.projectTargetUsers[
-                targetProjectId.indexOf(user.userId)
-              ].roleName,
-          });
-
-          state.projectEdit.projectTargetUsers.push({
             ...user,
             roleName:
               state.projectEdit.projectTargetUsers[

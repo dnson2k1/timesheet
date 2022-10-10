@@ -61,7 +61,9 @@ const Filters = () => {
           ))}
         </Select>
       </FormControl>
-      <Search type="member" />
+      <Box>
+        <Search type="member" />
+      </Box>
     </Box>
   );
 };

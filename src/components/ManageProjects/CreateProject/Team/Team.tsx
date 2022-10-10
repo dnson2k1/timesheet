@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useMemo, useState } from "react";
+import React, { ChangeEvent, useEffect, useMemo } from "react";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -10,13 +10,15 @@ import { Box } from "@mui/system";
 import Search from "./components/Search/Search";
 import Filters from "./components/Filters/Filters";
 import Member from "./components/Member";
-import { useAppSelector } from "~/hooks/hooks";
+import { useAppDispatch, useAppSelector } from "~/hooks/hooks";
 import { BRANCH_USER, TEAM_TYPE, TYPE_USER } from "~/enum";
 import { ChevronRightIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useFormContext } from "react-hook-form";
+import { changeActiveMember } from "~/redux/Project/projectSlice";
 
 const Team = () => {
   const classes = useStyles();
+  const dispatch = useAppDispatch();
   const { commonTask } = useAppSelector((state) => state.projectReducer);
   const {
     listUserProject,
@@ -24,11 +26,10 @@ const Team = () => {
     searchValueMember,
     searchValueTeam,
     listUserJoinProject,
+    activeMember,
   } = useAppSelector((state) => state.projectReducer);
 
   const { branch, type } = filters;
-
-  const [activeMember, setActiveMember] = useState(false);
 
   const newList = useMemo(
     () =>
@@ -108,7 +109,7 @@ const Team = () => {
                   type="Checkbox"
                   className={classes.checkbox}
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    setActiveMember(e.target.checked)
+                    dispatch(changeActiveMember(e.target.checked))
                   }
                 />
                 <Typography>Show Deactive Member</Typography>

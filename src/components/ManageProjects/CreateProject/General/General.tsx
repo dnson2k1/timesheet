@@ -130,22 +130,24 @@ const General = ({ project }: Props) => {
                   <Box>
                     <DatePicker name="timeStart" label="Start at" />
                     <Box className={classes.log_error}>
-                      {!!methods.formState.errors.timeStart && (
-                        <Typography color="error">
-                          {methods.formState.errors.timeStart.message}
-                        </Typography>
-                      )}
+                      {!!methods.formState.errors.timeStart?.message &&
+                        !!methods.formState.errors.timeEnd?.message && (
+                          <Typography color="error">
+                            {methods.formState.errors.timeStart.message}
+                          </Typography>
+                        )}
                     </Box>
                   </Box>
                   <Typography>to</Typography>
                   <Box>
-                    <DatePicker name="timeEnd" label="Start end" />
+                    <DatePicker name="timeEnd" label="End at" />
                     <Box className={classes.log_error}>
-                      {!!methods.formState.errors.timeEnd && (
-                        <Typography color="error">
-                          {methods.formState.errors.timeEnd.message}
-                        </Typography>
-                      )}
+                      {!!methods.formState.errors.timeEnd?.message &&
+                        !!methods.formState.errors.timeStart?.message && (
+                          <Typography color="error">
+                            {methods.formState.errors.timeEnd.message}
+                          </Typography>
+                        )}
                     </Box>
                   </Box>
                 </LocalizationProvider>
@@ -166,7 +168,6 @@ const General = ({ project }: Props) => {
 
             <Box className={classes.generalItemBt}>
               <Typography className={classes.label}>All user</Typography>
-
               <Box
                 className={classNames(classes.flex, classes.flexAlignCenter)}
               >

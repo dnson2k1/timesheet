@@ -34,7 +34,6 @@ import { IProject } from "~/interfaces/projectTypes";
 import { changeIsEdit } from "~/redux/Project/projectSlice";
 import CreateProject from "../ManageProjects/CreateProject";
 import { getDataEdit, getUserNotPagging } from "~/redux/Project/projectThunk";
-import { getAllTask } from "~/redux/ManageTask/manageTaskThunk";
 import View from "../View/View";
 import { toast } from "react-toastify";
 
@@ -90,9 +89,10 @@ const ProjectElement = ({ project }: Props) => {
     });
     setAnchorEl(null);
   };
-  const handleDelete = () => {
-    dispatch(deleteProject(project.id));
-    dispatch(getQuantityProjects());
+  const handleDelete = async () => {
+    await dispatch(deleteProject(project.id));
+    await dispatch(getAllProjects(request));
+    await dispatch(getQuantityProjects());
     setAnchorEl(null);
   };
   const handleChangeEdit = async () => {

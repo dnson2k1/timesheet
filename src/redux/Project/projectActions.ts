@@ -6,7 +6,6 @@ import {
   IProjectUser,
   IStateProject,
   ITargetUser,
-  ProjectTargetUser,
 } from "~/interfaces/projectTypes";
 import { ITaskItem } from "~/interfaces/taskTypes";
 
@@ -14,9 +13,17 @@ export const projectActions = {
   resetProjectForm: (state: IStateProject) => {
     state.projectEdit = {} as IDataForm;
     state.listUserJoinProject = [];
+    state.filters.branch = 0;
+    state.filters.type = 0;
   },
   changeIsEdit: (state: IStateProject, action: PayloadAction<boolean>) => {
     state.isEdit = action.payload;
+  },
+  changeActiveMember: (
+    state: IStateProject,
+    action: PayloadAction<boolean>
+  ) => {
+    state.activeMember = action.payload;
   },
   changeFilterBranchMember: (
     state: IStateProject,
@@ -97,9 +104,7 @@ export const projectActions = {
     const User = state.targetUser.find(
       (user) => user.userId === action.payload
     ) as ITargetUser;
-    state.targetUserJoin.push({
-      ...User,
-    });
+    state.targetUserJoin.push(User);
 
     state.targetUser = state.targetUser.filter(
       (user) => user.userId !== action.payload

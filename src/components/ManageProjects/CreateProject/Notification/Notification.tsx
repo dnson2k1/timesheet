@@ -1,21 +1,26 @@
 import { TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { useAppSelector } from "~/hooks/hooks";
 import { useStyles } from "./notifiStyles";
 
 const Notification = () => {
   const classes = useStyles();
-  const [notify, setNotify] = useState(false);
+  const [notify, setNotify] = useState<boolean>(false);
 
   const { isEdit } = useAppSelector((state) => state.projectReducer);
 
   const handleChangeCheckBox = (e: ChangeEvent<HTMLInputElement>) => {
-    setNotify(isEdit ? true : e.target.checked);
+    setNotify(isEdit ? !notify : e.target.checked);
   };
+  const { register } = useFormContext();
 
   const methods = useFormContext();
+
+  useEffect(() => {
+    isEdit && setNotify(true);
+  }, [isEdit]);
 
   return (
     <Box>
@@ -25,6 +30,7 @@ const Notification = () => {
           type="Checkbox"
           onChange={handleChangeCheckBox}
           name="komu"
+          checked={notify}
         />
         <Typography>Gửi thông báo đến Komu</Typography>
       </Box>
@@ -47,6 +53,7 @@ const Notification = () => {
               variant="standard"
               fullWidth
               className={classes.input}
+              {...register("komuChannelId")}
             />
           )}
         </Box>
